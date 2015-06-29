@@ -3,7 +3,7 @@ package recap;
 public class StartNetwork extends Network implements Functionable {
 	private Server server;
 
-	public StartNetwork(String networkName, Server sever) {
+	public StartNetwork(String networkName, Server server) {
 		super(networkName);
 		this.server = server;
 	}
