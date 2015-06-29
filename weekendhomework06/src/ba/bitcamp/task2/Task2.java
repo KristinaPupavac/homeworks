@@ -19,8 +19,9 @@ public class Task2 extends JFrame {
 
 	private JButton button1 = new JButton("First Name");
 	private JButton button2 = new JButton("Last Name");
-	private JLabel text1 = new JLabel(" Name ");
-	private JLabel text2 = new JLabel(" Surname ");
+	private JLabel text1 = new JLabel();
+	private String s = "";
+	
 
 	/**
 	 * Default constructor
@@ -37,8 +38,6 @@ public class Task2 extends JFrame {
 		button2.addActionListener(listener);
 		text1.setHorizontalAlignment(JLabel.CENTER);
 		add(text1, BorderLayout.CENTER);
-		text2.setHorizontalTextPosition(JLabel.CENTER);
-		add(text2, BorderLayout.CENTER);
 
 		setTitle("Task2");
 		setSize(500, 200);
@@ -108,10 +107,13 @@ public class Task2 extends JFrame {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			if (e.getSource() == button1) {
-				text1.setText(Task2.FirstName.generateName());
+				s += Task2.FirstName.generateName() + " ";
+				text1.setText(s);
 			}
 			if (e.getSource() == button2) {
-				text2.setText(Task2.LastName.generateName());
+				s += Task2.LastName.generateName();
+				text1.setText(s);
+				s = "";
 			}
 		}
 

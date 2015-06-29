@@ -16,14 +16,14 @@ import javax.swing.JLabel;
  */
 public class Task4 extends JFrame {
 	private static final long serialVersionUID = 3892600312934552127L;
-	private JButton button1 = new JButton("Char: ");
+	private JButton button1 = new JButton("Char: K");
 	private JButton button2 = new JButton("Insert");
 	private JButton button3 = new JButton(">");
 	private JButton button4 = new JButton("<");
 	private JLabel text = new JLabel("_");
-	private String[] characters = { "K", "R", "I", "S", "T", "I", "N", "A" };
 	String s = "";
 	int index;
+	private Character selectedCharacter = 'k';
 
 	/**
 	 * Default constructor
@@ -63,35 +63,37 @@ public class Task4 extends JFrame {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			if (e.getSource() == button1) {
-				text.setText("Char: "
-						+ characters[(int) Math.random() * characters.length]);
+				selectedCharacter = (char) ((int) (Math.random() * (123 - 97)) + 97);
 
+				button1.setText("Char: " + selectedCharacter);
 			} else if (e.getSource() == button2) {
-				index = text.getText().indexOf("_");
-				s = text.getText().substring(0, index)
-						+ button1.getText()
-						+ "_"
-						+ text.getText().substring(index + 1,
-								text.getText().length());
-				text.setText(s);
+				String s1 = s.substring(0, index);
+				String s2 = selectedCharacter + "";
+				if (index != s.length()) {
+					s2 += s.substring(index);
+				}
+
+				s = s1 + s2;
+				text.setText(s1 + "_" + s2);
 
 			} else if (e.getSource() == button3) {
-				index = text.getText().indexOf("_");
-				s = text.getText().substring(0, index)
-						+ text.getText().substring(index + 1, index + 2)
-						+ "_"
-						+ text.getText().substring(index + 2,
-								text.getText().length());
-				text.setText(s);
+				if (index < s.length()) {
+					index++;
+					String s1 = s.substring(0, index);
+					String s2 = s.substring(index);
+
+					text.setText(s1 + "_" + s2);
+				}
 
 			} else if (e.getSource() == button4) {
 				index = text.getText().indexOf("_");
-				s = text.getText().substring(0, index - 1)
-						+ "_"
-						+ text.getText().substring(index - 1, index)
-						+ text.getText().substring(index + 1,
-								text.getText().length());
-				text.setText(s);
+				if (index > 0) {
+					index--;
+					String s1 = s.substring(0, index);
+					String s2 = s.substring(index);
+
+					text.setText(s1 + "_" + s2);
+				}
 			}
 		}
 
