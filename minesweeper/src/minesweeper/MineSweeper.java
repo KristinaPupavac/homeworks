@@ -58,7 +58,7 @@ public class MineSweeper extends JFrame {
 										repaint();
 										int dialog = JOptionPane
 												.showConfirmDialog(null,
-														"You LOSE! Do you want to paly again?");
+														"You LOSE! Do you want to play again?");
 
 										if (dialog == JOptionPane.YES_OPTION) {
 											mine = Mine.minesTable(Mine
@@ -158,7 +158,7 @@ public class MineSweeper extends JFrame {
 			openAll();
 			repaint();
 			int c = JOptionPane.showConfirmDialog(null,
-					"You WIN! Do you want to paly again?");
+					"You WIN! Do you want to play again?");
 			if (c == JOptionPane.YES_OPTION) {
 				mine = Mine.minesTable(Mine.fillMines());
 				dispose();
