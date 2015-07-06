@@ -7,44 +7,24 @@ public class Point {
 	
 	private int x;
 	private int y;
-	private int x1;
-	private int y1;
 	private Color color;
 	private int size;
+	private boolean isLast;
 	
+	/**
+	 * 
+	 * @param x
+	 * @param y
+	 * @param color
+	 * @param size
+	 */
 	public Point (int x, int y, Color color, int size) {
 		this.x = x;
 		this.y = y;
 		this.color = color;
 		this.size = size;
+		this.isLast = false;
 	}
-	
-	public Point(int x, int y , int x1, int y1,  Color color, int size){
-		this.x = x;
-		this.y = y;
-		this.color = color;
-		this.size = size;;
-		this.x1 = x1;
-		this.y1 = y1;
-	}
-	
-	
-	public int getX1() {
-		return x1;
-	}
-
-	public void setX1(int x1) {
-		this.x1 = x1;
-	}
-
-	public int getY1() {
-		return y1;
-	}
-
-	public void setY1(int y1) {
-		this.y1 = y1;
-	}
-
 
 	/**
 	 * @return the size
@@ -102,6 +82,19 @@ public class Point {
 		this.color = color;
 	}
 	
+	/**
+	 * 
+	 * @param isLast
+	 */
+	public void setIsLast(boolean isLast){
+		this.isLast = isLast;
+	}
 	
-
+	/**
+	 * 
+	 * @return
+	 */
+	public boolean getIsLast(){
+		return isLast;
+	}
 }

@@ -11,7 +11,7 @@ public class Main {
 		window.add(dp);
 		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		window.setSize(500, 500);
-		window.setVisible(true); //uvijek zadnja stvar u mainu
+		window.setVisible(true);
 	
 	}
 

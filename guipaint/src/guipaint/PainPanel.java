@@ -1,7 +1,11 @@
 package guipaint;
 
+import java.awt.BasicStroke;
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
@@ -14,21 +18,18 @@ import javax.swing.JPanel;
 public class PainPanel extends JPanel {
 	private static final long serialVersionUID = 3976007952746528741L;
 
+	private ColorPicker colorPicker;
 	private static PointArray points;
-	private Color activeColor;
 	private int activeSize;
 	private boolean paint = true;
 	private static final int maxSize = 20;
 	private static final int minSize = 5;
 	public static String s = "";
-	private int x1;
-	private int y1;
-	private int x2;
-	private int y2;
+	private PointArray redoPoints;
+	private PointArray undoPoints;
+	private boolean isUndo;
 
-	private static Color[] supportedColors = new Color[] { Color.RED,
-			Color.BLUE, Color.GREEN, Color.ORANGE, Color.PINK };
-	// public static int[] sizeArray = new int[] { 10, 15, 20, 30 };
+	JPanel panel1 = new JPanel();
 	JButton increase = new JButton("+");
 	JButton reduce = new JButton("-");
 	JButton text = new JButton("text");
@@ -38,34 +39,16 @@ public class PainPanel extends JPanel {
 	public PainPanel(int height, int width) {
 
 		super();
+		colorPicker = new ColorPicker(width);
 		activeSize = 5;
+		this.setLayout(new BorderLayout());
 		points = new PointArray();
 		setSize(height, width);
 		setBackground(Color.WHITE);
 
-		for (int i = 0; i < supportedColors.length; i++) {
-
-			JButton color = new JButton("Pick");
-
-			color.setName(Integer.toString(i));
-			color.setForeground(supportedColors[i]);
-
-			color.addActionListener(new ActionListener() {
-
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					JButton cliked = (JButton) e.getSource();
-
-					String name = cliked.getName();
-					int index = Integer.parseInt(name);
-					activeColor = supportedColors[index];
-
-				}
-
-			});
-			add(color);
-
-		}
+		add(colorPicker, BorderLayout.NORTH);
+		add(panel1, BorderLayout.EAST);
+		panel1.setLayout(new GridLayout(5, 0));
 		addMouseMotionListener(new MouseHandler());
 
 		increase.addActionListener(new ActionListener() {
@@ -84,7 +67,6 @@ public class PainPanel extends JPanel {
 				if (activeSize > minSize) {
 					activeSize -= 5;
 				}
-
 			}
 
 		});
@@ -93,16 +75,25 @@ public class PainPanel extends JPanel {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				
+				PointArray undoPoints = new PointArray();
+				redoPoints = new PointArray();
+				for (int i = 0; i < points.getLength() - 5; i++) {
+					undoPoints.addPoint(points.elementAt(i));
+				}
+				isUndo = true;
+				points = undoPoints;
+				repaint();
 			}
-
 		});
-		
+
 		redo.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				
+				if (isUndo) {
+					points.addPoint(redoPoints.elementAt(undoPoints.getLength() + 1));
+				}
+				repaint();
 			}
 
 		});
@@ -111,34 +102,37 @@ public class PainPanel extends JPanel {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				Graphics g = getGraphics();
 				s += JOptionPane.showInputDialog("Input X and Y: ");
+				g.drawString("Uneseni tekst",
+						Integer.parseInt(s.substring(0, s.indexOf(" "))),
+						Integer.parseInt(s.substring(s.indexOf(" ") + 1)));
 				repaint();
 			}
 
 		});
 
-		add(increase);
-		add(reduce);
-		add(text);
-		add(undo);
-		add(redo);
+		panel1.add(increase);
+		panel1.add(reduce);
+		panel1.add(text);
+		panel1.add(undo);
+		panel1.add(redo);
 	}
 
 	@Override
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
-		for (int i = 0; i < points.getLength() -1 ; i++) {
+		Graphics2D g2d = (Graphics2D) g;
+		for (int i = 0; i < points.getLength() - 1; i++) {
 			Point p = points.elementAt(i);
 			Point p1 = points.elementAt(i + 1);
 			g.setColor(p.getColor());
+			g.setColor(p1.getColor());
 			if (paint) {
-				g.drawLine(p.getX(), p.getY(), p1.getX(),  p1.getY());
+				g2d.setStroke(new BasicStroke(p.getSize()));
+				g.drawLine(p.getX(), p.getY(), p1.getX(), p1.getY());
 			} else {
 				g.fillOval(p.getX(), p.getY(), p.getSize(), p.getSize());
-			}
-			if (text.isSelected()) {
-				g.drawString("Uneseni tekst", Integer.parseInt(s.substring(0, s.indexOf(' '))),
-						Integer.parseInt(s.substring(s.indexOf(' ')+1)));
 			}
 		}
 	}
@@ -147,14 +141,8 @@ public class PainPanel extends JPanel {
 
 		@Override
 		public void mouseDragged(MouseEvent e) {
-			Point newPoint = new Point(e.getX(), e.getY(), activeColor,
-					activeSize);
-			Point newPoint1 = new Point(x2, y2, e.getX(), e.getY(),
-					activeColor, activeSize);
-
-			x2 = e.getX();
-			y2 = e.getY();
-
+			Point newPoint = new Point(e.getX(), e.getY(),
+					colorPicker.getActive(), activeSize);
 			points.addPoint(newPoint);
 
 			if (e.isShiftDown() == true) {
@@ -172,21 +160,11 @@ public class PainPanel extends JPanel {
 
 		}
 
-		public void mousePressed(MouseEvent e) {
-
-			x1 = e.getX();
-			y1 = e.getY();
-			x2 = x1;
-			y2 = y1;
-
-		}
-
 		@Override
 		public void mouseMoved(MouseEvent e) {
 			// TODO Auto-generated method stub
-			
-		}
 
+		}
 
 	}
 }

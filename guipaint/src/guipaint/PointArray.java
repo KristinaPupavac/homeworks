@@ -5,7 +5,7 @@ public class PointArray {
 	
 	private Point[] ponits;
 	private int length;
-	
+
 	public PointArray () {
 		this.ponits= new Point[10];
 		this.length = 0;
