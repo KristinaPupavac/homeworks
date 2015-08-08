@@ -1,0 +1,5 @@
+Lenna or Lena is the name given to a standard test image widely used in the field of image processing since 1973.
+It is a picture of Lena Söderberg, shot by photographer Dwight Hooker, cropped from the centerfold of the November 1972 issue of Playboy magazine.
+Nearly one year later, the same photograph can be seen to appear shortly in Sleeper, a science-fiction movie directed by Woody Allen. 
+Given the nature of the image and its source, several academics have criticized its continued use in scientific publications and higher education as both sexist and unprofessional.
+The spelling "Lenna" comes from the anglicisation used in the original Playboy article.
