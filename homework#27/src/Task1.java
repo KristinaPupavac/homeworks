@@ -6,15 +6,16 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 /**
  * This class counting repeting of first letter in file
+ * 
  * @author KrisTina
  *
  */
 public class Task1 {
-	//Declaring variables
+	// Declaring variables
 	public static Integer letterCounter = 0;
 	private static LinkedBlockingQueue<Task> queue;
 	private static BufferedReader reader;
-	private static String line = "";
+
 	private static String firstLetter = " ";
 
 	public static void main(String[] args) {
@@ -24,12 +25,12 @@ public class Task1 {
 
 		try {
 			reader = new BufferedReader(new FileReader(file));
-			
+			String line = "";
+			line = reader.readLine();
+			firstLetter = line.charAt(0) + "";
+			queue.add(new Task(line));
 			while ((line = reader.readLine()) != null) {
-				firstLetter = line.charAt(0) + "";
-
-				Task task = new Task(line);
-				queue.add(task);
+				queue.add(new Task(line));
 			}
 
 			Worker w = new Worker();
@@ -52,6 +53,7 @@ public class Task1 {
 
 	/**
 	 * Class that represents job
+	 * 
 	 * @author KrisTina
 	 *
 	 */
@@ -63,7 +65,7 @@ public class Task1 {
 		}
 
 		@Override
-		public void run() {	
+		public void run() {
 			for (int i = 0; i < line.length(); i++) {
 				if ((line.charAt(i) + "").equalsIgnoreCase(firstLetter)) {
 					synchronized (letterCounter) {
@@ -76,6 +78,7 @@ public class Task1 {
 
 	/**
 	 * Workers taking jobs until queue is empty
+	 * 
 	 * @author KrisTina
 	 *
 	 */
