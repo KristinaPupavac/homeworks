@@ -1,3 +1,4 @@
+import java.awt.BorderLayout;
 import java.awt.Desktop;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
@@ -15,17 +16,24 @@ import java.net.UnknownHostException;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.ScrollPaneConstants;
 
 public class Client extends JFrame {
 	private static final long serialVersionUID = 6463534731269380864L;
-	//Declaring frame elements
+	// Declaring frame elements
 	private JTextField text = new JTextField();
 	private JTextArea area = new JTextArea();
 	private JButton button = new JButton("SEND");
-	
-	//Declaring sockets, buffer writer and reader
+	private JScrollPane scrollPane = new JScrollPane(area, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
+			JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+	private JPanel panel1 = new JPanel();
+	private JPanel panel2 = new JPanel();
+
+	// Declaring sockets, buffer writer and reader
 	private String line = "";
 	BufferedWriter writer = null;
 	BufferedReader reader = null;
@@ -39,10 +47,19 @@ public class Client extends JFrame {
 		text.addActionListener(new ButtonHandler());
 
 		setTitle("CLIENT");
-		setLayout(new GridLayout(3, 1));
-		add(area);
-		add(text);
-		add(button);
+		setLayout(new GridLayout(2, 1));
+		add(panel1);
+		add(panel2);
+		panel1.setLayout(new BorderLayout());
+		panel1.add(area, BorderLayout.CENTER);
+		panel1.add(scrollPane, BorderLayout.EAST);
+		panel2.setLayout(new BorderLayout());
+		panel2.add(text, BorderLayout.CENTER);
+		panel2.add(button, BorderLayout.EAST);
+
+		area.setEditable(false);
+		scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+		scrollPane.setEnabled(true);
 
 		setVisible(true);
 		setSize(300, 300);
@@ -52,7 +69,7 @@ public class Client extends JFrame {
 			client = new Socket("localhost", 9966);
 			writer = new BufferedWriter(new OutputStreamWriter(client.getOutputStream()));
 			reader = new BufferedReader(new InputStreamReader(client.getInputStream()));
-			
+
 			// Reading sent messages.
 			while ((line = reader.readLine()) != null) {
 				if (line.startsWith("/web")) {
@@ -91,9 +108,10 @@ public class Client extends JFrame {
 		}
 
 	}
-	
+
 	/**
 	 * Class that allows you to print text to the text field on frame
+	 * 
 	 * @author KrisTina
 	 *
 	 */
@@ -105,7 +123,7 @@ public class Client extends JFrame {
 				writer.write(text.getText());
 				writer.newLine();
 				writer.flush();
-				
+
 				// Writing sent message in the chat area.
 				area.append("Client: " + text.getText() + "\n");
 				text.setText("");
@@ -118,7 +136,7 @@ public class Client extends JFrame {
 	}
 
 	public static void main(String[] args) {
-		//Callling constructor
+		// Callling constructor
 		new Client();
 
 	}

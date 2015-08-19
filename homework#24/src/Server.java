@@ -1,3 +1,4 @@
+import java.awt.BorderLayout;
 import java.awt.Desktop;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
@@ -15,17 +16,24 @@ import java.net.URISyntaxException;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.ScrollPaneConstants;
 
 public class Server extends JFrame {
 	private static final long serialVersionUID = -1960888810093318280L;
-	//Declaring frame elements
+	// Declaring frame elements
 	private JTextField text = new JTextField();
 	private JTextArea area = new JTextArea();
 	private JButton button = new JButton("SEND");
+	private JScrollPane scrollPane = new JScrollPane(area, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
+			JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+	private JPanel panel1 = new JPanel();
+	private JPanel panel2 = new JPanel();
 
-	//Declaring sockets, buffer writer and reader
+	// Declaring sockets, buffer writer and reader
 	private String line = "";
 	BufferedReader reader = null;
 	BufferedWriter writer = null;
@@ -41,10 +49,19 @@ public class Server extends JFrame {
 
 		setTitle("SERVER");
 
-		setLayout(new GridLayout(3, 1));
-		add(area);
-		add(text);
-		add(button);
+		setLayout(new GridLayout(2, 1));
+		add(panel1);
+		add(panel2);
+		panel1.setLayout(new BorderLayout());
+		panel1.add(area, BorderLayout.CENTER);
+		panel1.add(scrollPane, BorderLayout.EAST);
+		panel2.setLayout(new BorderLayout());
+		panel2.add(text, BorderLayout.CENTER);
+		panel2.add(button, BorderLayout.EAST);
+
+		area.setEditable(false);
+		scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+		scrollPane.setEnabled(true);
 
 		setVisible(true);
 		setSize(300, 300);
@@ -55,7 +72,7 @@ public class Server extends JFrame {
 			client = server.accept();
 			writer = new BufferedWriter(new OutputStreamWriter(client.getOutputStream()));
 			reader = new BufferedReader(new InputStreamReader(client.getInputStream()));
-			
+
 			// Reading sent messages.
 			while ((line = reader.readLine()) != null) {
 				if (line.startsWith("/web")) {
@@ -91,10 +108,11 @@ public class Server extends JFrame {
 			e.printStackTrace();
 		}
 	}
-	
+
 	/**
 	 * 
 	 * Class that allows you to print text to the text field on frame
+	 * 
 	 * @author KrisTina
 	 *
 	 */
@@ -106,7 +124,7 @@ public class Server extends JFrame {
 				writer.write(text.getText());
 				writer.newLine();
 				writer.flush();
-				
+
 				// Writing sent message in the chat area.
 				area.append("Server: " + text.getText() + "\n");
 				text.setText("");
@@ -119,7 +137,7 @@ public class Server extends JFrame {
 	}
 
 	public static void main(String[] args) {
-		//Caling constructor
+		// Caling constructor
 		new Server();
 	}
 
